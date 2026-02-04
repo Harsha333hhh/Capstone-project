@@ -1,0 +1,40 @@
+###Create product req
+GET http://localhost:4000/product-api/products
+
+###
+POST http://localhost:4000/product-api/products
+Content-Type: application/json
+
+{
+  "productName":"mobile",
+  "price":90000,
+  "brand":"xaomi"
+}
+
+
+###Create user req
+GET http://localhost:4000/user-api/users
+
+###
+POST http://localhost:4000/user-api/users
+Content-Type: application/json
+
+{
+  "name":"ram",
+  "email":"ram@gmail.com",
+  "password":"",
+  "cart":[]
+}
+ 
+
+#add products to cart
+###
+PUT http://localhost:4000/user-api/user-cart/user-id/6980719b1ffaec80cd37b6e6/product-id/69806c39dc066099a51ba416
+
+
+
+//findOne()
+//find
+
+###
+GET http://localhost:4000/user-api/users/6980719b1ffaec80cd37b6e6
