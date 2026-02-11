@@ -16,20 +16,30 @@ const userSchema = new Schema({
   email:{
     type:String,
     required:[true,"Email is required"],
-    unique:true
+    unique:[true,"Email already exists"]
   },
   password: {
     type: String,
     required:[true,"Password is required"]
   },
-  cart:{
-    type:[cartSchema]
+  profileImage:{
+    type:String,
+    default:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+  },
+  role:{
+    type:String,
+    enum:["user","admin","author"],
+    default:"user"
+  },status:{
+    type:String,
+    enum:["active","blocked"],
+    default:"active"
   }
-
 },{
   strict:"throw",
   timestamps:true,
   versionKey:false
 })
+
 
 export const UserModel = model("user",userSchema);

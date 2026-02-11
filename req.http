@@ -1,40 +1,109 @@
-###Create product req
-GET http://localhost:4000/product-api/products
-
-###
-POST http://localhost:4000/product-api/products
-Content-Type: application/json
-
-{
-  "productName":"mobile",
-  "price":90000,
-  "brand":"xaomi"
-}
-
-
-###Create user req
-GET http://localhost:4000/user-api/users
-
-###
+### user register 
 POST http://localhost:4000/user-api/users
 Content-Type: application/json
 
 {
-  "name":"ram",
-  "email":"ram@gmail.com",
-  "password":"",
-  "cart":[]
+    "name":"John Doey",
+    "email":"jonn@example.com",
+    "password":"password123",
+    "profileImage":"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 }
- 
 
-#add products to cart
-###
-PUT http://localhost:4000/user-api/user-cart/user-id/6980719b1ffaec80cd37b6e6/product-id/69806c39dc066099a51ba416
+### author register
+POST http://localhost:4000/author-api/users
+Content-Type: application/json
+
+{
+    "name":"Jan",
+    "email":"jan@example.com",
+    "password":"password123",
+    "profileImage":"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+}
+
+### author login (sets cookie automatically)
+POST http://localhost:4000/common-api/login
+Content-Type: application/json
+
+{
+    "email":"jan@example.com",
+    "password":"password123",
+    "role":"author"
+}
+
+### create article (uses cookie authentication - login first)
+POST http://localhost:4000/article-api/articles
+Content-Type: application/json
+
+{
+    "title":"My First Article",
+    "content":"This is the content of my first article.",
+    "category":"Technology"
+}
+
+### get all articles (uses cookie authentication - login first)
+GET http://localhost:4000/article-api/articles
+
+### get articles by author (uses cookie authentication - login first)
+GET http://localhost:4000/article-api/articles/author/6989964c676264bf9bce3146
+
+### update article (uses cookie authentication - login first)
+PUT http://localhost:4000/article-api/articles/698997f3676264bf9bce3153
+Content-Type: application/json
+
+{
+    "title":"Updated Article Title",
+    "content":"Updated content of the article.",
+    "articleId":"698997f3676264bf9bce3153"
+}
+
+### delete article (uses cookie authentication - login first)
+DELETE http://localhost:4000/article-api/articles/6989aed1676264bf9bce3185
+
+### user login (sets cookie automatically)
+POST http://localhost:4000/common-api/login
+Content-Type: application/json
+
+{
+    "email":"jonn@example.com",
+    "password":"password123",
+    "role":"user"
+}
+
+### logout
+POST http://localhost:4000/common-api/logout
+
+// Cookie-based authentication workflow:
+// 1. Login first (author-api/login or user-api/login) - this sets the cookie
+// 2. Make protected requests - cookies are sent automatically
+// 3. Logout to clear the cookie
+
+### read articles (uses cookie authentication - login first)
+GET http://localhost:4000/article-api/articles
+
+### add comments to an article (uses cookie authentication - login first)
+POST http://localhost:4000/article-api/articles/698997f3676264bf9bce3153/comments
+Content-Type: application/json
+
+{
+    "comment":"This is a great article!"
+}   
 
 
+###test req
+GET http://localhost:4000/test
 
-//findOne()
-//find
+###block user (admin only)
+POST http://localhost:4000/admin-api/block-user/698ac3a4e585b6079a3e3ffb
 
-###
-GET http://localhost:4000/user-api/users/6980719b1ffaec80cd37b6e6
+###activate user (admin only)
+POST http://localhost:4000/admin-api/activate-user/698ac3a4e585b6079a3e3ffb
+
+
+###update password
+PUT  http://localhost:4000/common-api/change-password/698ac3a4e585b6079a3e3ffb 
+Content-Type: application/json
+
+{
+    "oldPassword":"password123",
+    "newPassword":"newpassword456"
+    }
