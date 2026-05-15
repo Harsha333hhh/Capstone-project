@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../authStore";
+import { API_BASE_URL } from "../config/api.js";
 
 function ArticleDetail() {
   const [article, setArticle] = useState(null);
@@ -27,7 +28,7 @@ function ArticleDetail() {
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:4000/article-api/articles");
+        const res = await fetch(`${API_BASE_URL}/article-api/articles`);
         const data = await res.json();
 
         if (res.status === 200) {
@@ -67,7 +68,7 @@ function ArticleDetail() {
       console.log('Comment text:', commentText);
       console.log('Current user:', currentUser);
       
-      const res = await fetch(`http://localhost:4000/article-api/articles/${articleId}/comments`, {
+      const res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -102,7 +103,7 @@ function ArticleDetail() {
   const handleDeleteComment = async (commentId) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
-        const res = await fetch(`http://localhost:4000/article-api/articles/${articleId}/comments/${commentId}`, {
+        const res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}/comments/${commentId}`, {
           method: "DELETE",
           credentials: "include",
         });
@@ -137,7 +138,7 @@ function ArticleDetail() {
     }
 
     try {
-      const res = await fetch(`http://localhost:4000/article-api/articles/${articleId}/comments/${commentId}`, {
+      const res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}/comments/${commentId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -161,7 +162,7 @@ function ArticleDetail() {
   const handleDeleteArticle = async () => {
     if (window.confirm("Are you sure you want to delete this article?")) {
       try {
-        const res = await fetch(`http://localhost:4000/article-api/articles/${articleId}`, {
+        const res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}`, {
           method: "DELETE",
           credentials: "include",
         });

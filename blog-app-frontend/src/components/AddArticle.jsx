@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authStore";
+import { API_BASE_URL } from "../config/api.js";
 
 function AddArticle() {
   const {
@@ -29,7 +30,7 @@ function AddArticle() {
       // Add status: "active" so article is immediately visible and commentable
       const articleData = { ...article, status: "active" };
       
-      let res = await fetch("http://localhost:4000/article-api/articles", {
+      let res = await fetch(`${API_BASE_URL}/article-api/articles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

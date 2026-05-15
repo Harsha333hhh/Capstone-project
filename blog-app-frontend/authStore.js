@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { API_BASE_URL } from "./src/config/api.js";
 
 export const useAuth = create((set) => ({
     currentUser: null,
@@ -9,7 +10,7 @@ export const useAuth = create((set) => ({
     login: async (userCredWithRole) => {
         try {
             set({ loading: true, error: null });
-            const res = await axios.post("http://localhost:4000/common-api/login", userCredWithRole,{withCredentials:true
+            const res = await axios.post(`${API_BASE_URL}/common-api/login`, userCredWithRole,{withCredentials:true
             });
 console.log("Login response:", res);
             const userData = res.data?.payload ?? null;
@@ -38,7 +39,7 @@ console.log("Login response:", res);
     logout: async () => {
         try {
             set({ loading: true, error: null });
-            await axios.post("http://localhost:4000/common-api/logout", {}, { withCredentials: true });
+            await axios.post(`${API_BASE_URL}/common-api/logout`, {}, { withCredentials: true });
             set({
                 loading: false,
                 isAuthenticated: false,

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../authStore";
+import { API_BASE_URL } from "../config/api.js";
 
 function Register() {
 
@@ -47,11 +48,11 @@ function Register() {
       
       if (role === "user" || role === "USER") {
         //make req to user api
-        res = await axios.post("http://localhost:4000/user-api/users", user);
+        res = await axios.post(`${API_BASE_URL}/user-api/users`, user);
         console.log("User registration response:", res);
       } else if (role === "author" || role === "AUTHOR") {
         //make req to author api
-        res = await axios.post("http://localhost:4000/author-api/users", user);
+        res = await axios.post(`${API_BASE_URL}/author-api/users`, user);
         console.log("Author registration response:", res);
       }
 

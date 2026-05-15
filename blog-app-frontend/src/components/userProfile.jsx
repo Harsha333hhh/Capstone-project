@@ -2,6 +2,7 @@ import React from 'react'
 import { useAuth } from '../../authStore'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
+import { API_BASE_URL } from '../config/api.js'
 
 function userProfile() {
   const { currentUser, logout } = useAuth()
@@ -26,7 +27,7 @@ function userProfile() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("http://localhost:4000/user-api/articles", {
+      const res = await fetch(`${API_BASE_URL}/user-api/articles`, {
         credentials: "include"
       });
       
@@ -70,7 +71,7 @@ function userProfile() {
     }
 
     try {
-      const res = await fetch(`http://localhost:4000/common-api/change-password/${currentUser._id}`, {
+      const res = await fetch(`${API_BASE_URL}/common-api/change-password/${currentUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../authStore";
+import { API_BASE_URL } from "../config/api.js";
 
 function EditArticle() {
   const {
@@ -26,7 +27,7 @@ function EditArticle() {
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:4000/article-api/articles`, {
+        const res = await fetch(`${API_BASE_URL}/article-api/articles`, {
           credentials: "include",
         });
         const data = await res.json();
@@ -69,7 +70,7 @@ function EditArticle() {
       // Preserve the status when updating
       const articleData = { ...article, status: articleStatus };
       
-      let res = await fetch(`http://localhost:4000/article-api/articles/${articleId}`, {
+      let res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authStore";
+import { API_BASE_URL } from "../config/api.js";
 
 function ArticleList() {
   const [articles, setArticles] = useState([]);
@@ -14,7 +15,7 @@ function ArticleList() {
   const handleDeleteArticle = async (articleId) => {
     if (window.confirm("Are you sure you want to delete this article?")) {
       try {
-        const res = await fetch(`http://localhost:4000/article-api/articles/${articleId}`, {
+        const res = await fetch(`${API_BASE_URL}/article-api/articles/${articleId}`, {
           method: "DELETE",
           credentials: "include",
         });
@@ -40,7 +41,7 @@ function ArticleList() {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:4000/article-api/articles");
+        const res = await fetch(`${API_BASE_URL}/article-api/articles`);
         const data = await res.json();
 
         if (res.status === 200) {
