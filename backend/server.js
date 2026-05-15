@@ -8,7 +8,7 @@ import { adminRoute } from './APIs/AdminApi.js'
 import { articleRoute } from './APIs/ArticlesApi.js'
 import { authMiddleware } from './Middlewares/authMiddleware.js'
 import { commonRouter } from './APIs/CommonApi.js'
-
+import cors from 'cors'
 dotenv.config()
 
 // create http server
@@ -28,7 +28,7 @@ async function connectDB() {
 }
 
 connectDB()
-
+app.use(cors({ origin: ['http://localhost:5173'], credentials: true }))
 // use body parser middleware
 app.use(express.json())
 app.use(cookieParser())
@@ -37,7 +37,7 @@ app.use(cookieParser())
 app.use('/user-api', userRoute)
 app.use('/author-api', authorRoute);
 app.use('/admin-api', adminRoute);
-app.use('/article-api', authMiddleware, articleRoute);
+app.use('/article-api', articleRoute);
 app.use('/common-api', commonRouter);
 
 //app.use('/product-api', productRoute)

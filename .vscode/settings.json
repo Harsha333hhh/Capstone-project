@@ -1,0 +1,4 @@
+{
+    "rest-client.enableCookieJar": true,
+    "rest-client.rememberCookiesForSubsequentRequests": true
+}

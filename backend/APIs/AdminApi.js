@@ -33,25 +33,30 @@ export const adminRoute = express.Router()
 
 // block users
 adminRoute.post("/block-user/:userId",async(req,res)=>{
-    let userId=req.params.userId;
-    // find user and update status to blocked
-    let user=await UserModel.findByIdAndUpdate(userId,{status:"blocked"},{new:true});
-    if(!user){
-        res.status(401).json({message:"user not found"});
+    try {
+        let userId=req.params.userId;
+        let user=await UserModel.findByIdAndUpdate(userId,{status:"blocked"},{new:true});
+        if(!user){
+            return res.status(404).json({message:"user not found"});
+        }
+        res.json({message:"user status is updated to blocked",payload:user})
+    } catch(err) {
+        res.status(500).json({message:"error",reason:err.message})
     }
-    res.json({message:"the user is blocked successfully"})
-    res.json({message:"user status is updated to blocked",payload:user})
 })
 
 //unblock users 
 adminRoute.post("/activate-user/:userId",async(req,res)=>{
-    let userId=req.params.userId;
-    // find user and activate his status
-    let user=await UserModel.findByIdAndUpdate(userId,{status:"active"},{new:true});
-    if(!user){
-        res.status(401).json({message:"user not found"});
+    try {
+        let userId=req.params.userId;
+        let user=await UserModel.findByIdAndUpdate(userId,{status:"active"},{new:true});
+        if(!user){
+            return res.status(404).json({message:"user not found"});
+        }
+        res.json({message:"user status is updated to active status",payload:user})
+    } catch(err) {
+        res.status(500).json({message:"error",reason:err.message})
     }
-    res.json({message:"user status is updated to active status",payload:user})
 })
 
 

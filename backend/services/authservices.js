@@ -2,8 +2,6 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { UserModel as User } from '../Models/UserModel.js';
-import { ArticleModel } from '../Models/ArticleModel.js';
-import {userRoute} from '../APIs/UsersApi.js';
 
 dotenv.config();
 
