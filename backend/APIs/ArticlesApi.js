@@ -30,6 +30,14 @@ articleRoute.get('/articles',async(req,res)=>{
     try {
         // read all articles and populate author and comment users
         let articles = await ArticleModel.find({}).populate('author','name email').populate('comments.user','name email');
+        
+        // DEBUG: Log first article's comments structure
+        if(articles.length > 0) {
+            console.log('\n=== GET /ARTICLES DEBUG ===');
+            console.log('First article comments:', JSON.stringify(articles[0].comments, null, 2));
+            console.log('===========================\n');
+        }
+        
         // send res 
         res.status(200).json({message:"Articles retrieved successfully",payload:articles})
     } catch (err) {
@@ -291,5 +299,30 @@ articleRoute.put('/articles/:articleId/comments/:commentId', authMiddleware, asy
         res.status(200).json({message:"Comment updated successfully",payload:populatedArticle})
     } catch (err) {
         res.status(500).json({message:"Error updating comment",reason:err.message})
+    }
+})
+
+// DEBUG: Get raw article data without population
+articleRoute.get('/debug/articles/:articleId', async(req,res)=>{
+    try {
+        const { articleId } = req.params;
+        
+        // Get article WITHOUT population
+        const rawArticle = await ArticleModel.findById(articleId);
+        
+        // Get article WITH population
+        const populatedArticle = await ArticleModel.findById(articleId)
+            .populate('author','name email')
+            .populate('comments.user','name email');
+        
+        res.status(200).json({
+            message: "Debug data",
+            raw: rawArticle,
+            populated: populatedArticle,
+            commentsCount: rawArticle?.comments?.length || 0,
+            comments: rawArticle?.comments || []
+        });
+    } catch (err) {
+        res.status(500).json({message:"Debug error",reason:err.message})
     }
 })

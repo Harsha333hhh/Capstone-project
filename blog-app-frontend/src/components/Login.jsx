@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authStore";
+
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -18,27 +21,31 @@ function Login() {
   const navigate = useNavigate();
 
   const onUserLogin = async (userCred) => {
-    await login(userCred);
     console.log("Login attempted with credentials:", userCred);
+    await login(userCred);
   };
 
-  // Clear error on component mount and when user tries to login again
+  // Redirect when authenticated
   useEffect(() => {
-    clearError();
-  }, [clearError]);
-
-  useEffect(() => {
-    console.log("Auth:", isAuthenticated);
-    console.log("User:", currentUser);
-
+    console.log("Checking auth state - isAuthenticated:", isAuthenticated, "currentUser:", currentUser);
+    
     if (isAuthenticated && currentUser) {
+      console.log("User authenticated, role:", currentUser.role);
+      
       if (currentUser.role === "user") {
-        navigate("/user-profile");
+        console.log("Navigating to user-profile");
+        navigate("/user-profile", { replace: true });
       } else if (currentUser.role === "author") {
-        navigate("/author-profile");
+        console.log("Navigating to author-profile");
+        navigate("/author-profile", { replace: true });
       }
     }
   }, [isAuthenticated, currentUser, navigate]);
+
+  // Clear error on component mount
+  useEffect(() => {
+    clearError();
+  }, []);
 
   // Show loading state while logging in
   if (loading) {
@@ -114,15 +121,25 @@ function Login() {
 
           {/* Password - required in UserModel */}
           <div className="mt-4">
-            <input
-              type="password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: { value: 6, message: "Password must be at least 6 characters" },
-              })}
-              placeholder="Password"
-              className="border border-pink-700 rounded-lg w-full px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Password must be at least 6 characters" },
+                })}
+                placeholder="Password"
+                className="border border-pink-700 rounded-lg w-full px-3 py-2 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
             )}

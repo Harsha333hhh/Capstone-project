@@ -6,6 +6,7 @@ import { useAuth } from "../../authStore";
 
 function Register() {
 
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -194,16 +195,26 @@ if(error){
 
           {/* Password */}
           <div className="mt-4">
-            <input
-              type="password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: { value: 6, message: "Password must be at least 6 characters" },
-                maxLength: { value: 100, message: "Password too long" },
-              })}
-              placeholder="Password"
-              className="border border-pink-700 rounded-lg w-full px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Password must be at least 6 characters" },
+                  maxLength: { value: 100, message: "Password too long" },
+                })}
+                placeholder="Password"
+                className="border border-pink-700 rounded-lg w-full px-3 py-2 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
             )}

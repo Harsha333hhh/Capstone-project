@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAuth } from '../../authStore'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 function userProfile() {
   const { currentUser, logout } = useAuth()
@@ -10,9 +10,16 @@ function userProfile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordError, setPasswordError] = useState(null);
   const [passwordSuccess, setPasswordSuccess] = useState(null);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Use refs for password inputs to prevent values from being stored in DOM
+  const oldPasswordRef = useRef(null);
+  const newPasswordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   // Fetch articles
   const fetchArticles = async () => {
@@ -43,17 +50,21 @@ function userProfile() {
     setPasswordError(null);
     setPasswordSuccess(null);
 
-    if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+    const oldPassword = oldPasswordRef.current?.value || '';
+    const newPassword = newPasswordRef.current?.value || '';
+    const confirmPassword = confirmPasswordRef.current?.value || '';
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
       setPasswordError("All fields are required");
       return;
     }
 
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    if (newPassword !== confirmPassword) {
       setPasswordError("New passwords do not match");
       return;
     }
 
-    if (passwordData.newPassword.length < 6) {
+    if (newPassword.length < 6) {
       setPasswordError("New password must be at least 6 characters");
       return;
     }
@@ -64,8 +75,8 @@ function userProfile() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          oldPassword: passwordData.oldPassword,
-          newPassword: passwordData.newPassword
+          oldPassword: oldPassword,
+          newPassword: newPassword
         })
       });
 
@@ -73,7 +84,10 @@ function userProfile() {
 
       if (res.status === 200) {
         setPasswordSuccess("Password changed successfully!");
-        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        // Clear all password inputs
+        oldPasswordRef.current.value = '';
+        newPasswordRef.current.value = '';
+        confirmPasswordRef.current.value = '';
         setTimeout(() => setShowPasswordForm(false), 2000);
       } else {
         setPasswordError(data.message || "Failed to change password");
@@ -96,10 +110,18 @@ function userProfile() {
     }
   }, [currentUser]);
 
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (!currentUser) {
+      console.log("User not authenticated, redirecting to home");
+      navigate('/', { replace: true });
+    }
+  }, [currentUser, navigate]);
+
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-amber-50">
-        <p className="text-center text-orange-400 text-3xl">Please login to view your profile</p>
+        <p className="text-center text-orange-400 text-3xl">Redirecting to home...</p>
       </div>
     );
   }
@@ -155,35 +177,59 @@ function userProfile() {
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Old Password</label>
-                <input 
-                  type="password" 
-                  value={passwordData.oldPassword}
-                  onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
-                  placeholder="Enter your current password"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
+                <div className="relative">
+                  <input 
+                    ref={oldPasswordRef}
+                    type={showOldPassword ? "text" : "password"} 
+                    placeholder="Enter your current password"
+                    className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                  >
+                    {showOldPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">New Password</label>
-                <input 
-                  type="password" 
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                  placeholder="Enter your new password"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
+                <div className="relative">
+                  <input 
+                    ref={newPasswordRef}
+                    type={showNewPassword ? "text" : "password"} 
+                    placeholder="Enter your new password"
+                    className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                  >
+                    {showNewPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Confirm New Password</label>
-                <input 
-                  type="password" 
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
-                  placeholder="Confirm your new password"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
+                <div className="relative">
+                  <input 
+                    ref={confirmPasswordRef}
+                    type={showConfirmPassword ? "text" : "password"} 
+                    placeholder="Confirm your new password"
+                    className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                  >
+                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
               </div>
 
               <button 

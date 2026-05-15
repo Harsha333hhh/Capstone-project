@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useEffect } from 'react'
 import Layout from './components/Layout'
 import Home from './components/Home'
 import Login from './components/Login'
@@ -9,6 +10,7 @@ import ArticleList from './components/ArticleList'
 import ArticleDetail from './components/ArticleDetail'
 import UserProfile from './components/userProfile'
 import AuthorProfile from './components/authorProfile'
+import { useAuth } from '../authStore'
 import {ToastBar} from 'react-hot-toast'
 const router = createBrowserRouter([
   {
@@ -29,6 +31,12 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+  const initializeAuth = useAuth((state) => state.initializeAuth);
+  
+  useEffect(() => {
+    console.log("App mounted, initializing auth...");
+    initializeAuth();
+  }, []);
 
   return (
   <RouterProvider router={router} />
