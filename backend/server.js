@@ -16,6 +16,7 @@ const app = express()
 const port = process.env.PORT || 4000
 const mongodbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecomdb'
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+const allowedOrigins = frontendUrl.split(',').map(url => url.trim()).concat(['http://localhost:5173', 'http://localhost:5174'])
 
 // Connect to MongoDB database
 async function connectDB() {
@@ -30,7 +31,7 @@ async function connectDB() {
 }
 
 connectDB()
-app.use(cors({ origin: [frontendUrl, 'http://localhost:5174'], credentials: true }))
+app.use(cors({ origin: allowedOrigins, credentials: true }))
 // use body parser middleware
 app.use(express.json())
 app.use(cookieParser())
