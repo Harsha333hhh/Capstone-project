@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 const isProd = process.env.NODE_ENV === "production";
 const cookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: isProd ? "none" : "lax",
     secure: isProd,
 };
 // login
