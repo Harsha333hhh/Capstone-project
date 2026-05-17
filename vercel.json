@@ -1,10 +1,10 @@
 {
   "buildCommand": "cd blog-app-frontend && npm install && npm run build",
   "outputDirectory": "blog-app-frontend/dist",
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/.*",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
